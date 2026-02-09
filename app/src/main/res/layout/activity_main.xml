@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F3F5FF">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,185 +12,135 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MCQ Exam Practice"
-            android:textColor="#1C2A66"
-            android:textSize="28sp"
+            android:text="MCQ Builder + Practice"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Paste ChatGPT MCQ Details" />
+
+        <EditText
+            android:id="@+id/etQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Question" />
+
+        <EditText
+            android:id="@+id/etOptionA"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Option A" />
+
+        <EditText
+            android:id="@+id/etOptionB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Option B" />
+
+        <EditText
+            android:id="@+id/etOptionC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Option C" />
+
+        <EditText
+            android:id="@+id/etOptionD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Option D" />
+
+        <EditText
+            android:id="@+id/etCorrectOption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Correct Option (A/B/C/D)" />
+
+        <Button
+            android:id="@+id/btnAddMcq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Add MCQ" />
+
+        <TextView
+            android:id="@+id/tvCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Save one MCQ from ChatGPT, then solve it."
-            android:textColor="#4F5B93" />
+            android:text="Saved MCQs: 0" />
 
-        <com.google.android.material.card.MaterialCardView
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="12dp"
+            android:background="#DDDDDD" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Practice Mode"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPracticeQuestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:strokeColor="#D7DDFE"
-            app:strokeWidth="1dp">
+            android:layout_marginTop="8dp"
+            android:text="No MCQ yet. Add your first question from ChatGPT above." />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Create / Replace MCQ"
-                    android:textColor="#1C2A66"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/etQuestion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="#6A7DFF"
-                    android:hint="Question"
-                    android:inputType="textMultiLine" />
-
-                <EditText
-                    android:id="@+id/etOptionA"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Option A" />
-
-                <EditText
-                    android:id="@+id/etOptionB"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Option B" />
-
-                <EditText
-                    android:id="@+id/etOptionC"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Option C" />
-
-                <EditText
-                    android:id="@+id/etOptionD"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Option D" />
-
-                <EditText
-                    android:id="@+id/etCorrectOption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Correct Option (A/B/C/D)" />
-
-                <Button
-                    android:id="@+id/btnSaveMcq"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:backgroundTint="#5C6CFF"
-                    android:text="Save MCQ"
-                    android:textColor="#FFFFFF" />
-
-                <TextView
-                    android:id="@+id/tvStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Stored MCQ: none"
-                    android:textColor="#4F5B93" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
+        <RadioGroup
+            android:id="@+id/rgPracticeOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:strokeColor="#D7DDFE"
-            app:strokeWidth="1dp">
+            android:layout_marginTop="6dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <RadioButton
+                android:id="@+id/rbOptionA"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:text="Option A" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Practice"
-                    android:textColor="#1C2A66"
-                    android:textStyle="bold" />
+            <RadioButton
+                android:id="@+id/rbOptionB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option B" />
 
-                <TextView
-                    android:id="@+id/tvPracticeQuestion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="No MCQ saved yet. Paste from ChatGPT and tap Save MCQ."
-                    android:textColor="#2A3569"
-                    android:textSize="16sp" />
+            <RadioButton
+                android:id="@+id/rbOptionC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option C" />
 
-                <RadioGroup
-                    android:id="@+id/rgPracticeOptions"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp">
+            <RadioButton
+                android:id="@+id/rbOptionD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option D" />
+        </RadioGroup>
 
-                    <RadioButton
-                        android:id="@+id/rbOptionA"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Option A"
-                        android:textColor="#2A3569" />
+        <Button
+            android:id="@+id/btnCheckAnswer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Check Answer" />
 
-                    <RadioButton
-                        android:id="@+id/rbOptionB"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Option B"
-                        android:textColor="#2A3569" />
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Next Question" />
 
-                    <RadioButton
-                        android:id="@+id/rbOptionC"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Option C"
-                        android:textColor="#2A3569" />
-
-                    <RadioButton
-                        android:id="@+id/rbOptionD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Option D"
-                        android:textColor="#2A3569" />
-                </RadioGroup>
-
-                <Button
-                    android:id="@+id/btnCheckAnswer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="#00A878"
-                    android:text="Check Answer"
-                    android:textColor="#FFFFFF" />
-
-                <TextView
-                    android:id="@+id/tvResult"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        <TextView
+            android:id="@+id/tvResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </ScrollView>

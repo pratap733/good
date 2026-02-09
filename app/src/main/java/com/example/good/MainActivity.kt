@@ -6,10 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var storage: McqStorage
-
-    private var savedQuestion: McqQuestion? = null
-    private var attempted = false
+    private val questions = mutableListOf<McqQuestion>()
+    private var currentQuestionIndex = 0
     private var score = 0
 
     private lateinit var etQuestion: EditText
@@ -18,7 +16,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var etOptionC: EditText
     private lateinit var etOptionD: EditText
     private lateinit var etCorrectOption: EditText
-    private lateinit var tvStatus: TextView
+    private lateinit var tvCount: TextView
     private lateinit var tvPracticeQuestion: TextView
     private lateinit var rgPracticeOptions: RadioGroup
     private lateinit var rbOptionA: RadioButton
@@ -26,21 +24,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rbOptionC: RadioButton
     private lateinit var rbOptionD: RadioButton
     private lateinit var btnCheckAnswer: Button
+    private lateinit var btnNext: Button
     private lateinit var tvResult: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        storage = McqStorage(this)
         bindViews()
 
-        savedQuestion = storage.load()
-
-        findViewById<Button>(R.id.btnSaveMcq).setOnClickListener { saveOrReplaceMcq() }
+        findViewById<Button>(R.id.btnAddMcq).setOnClickListener { addQuestion() }
         btnCheckAnswer.setOnClickListener { checkAnswer() }
+        btnNext.setOnClickListener { nextQuestion() }
 
-        updateStatus()
+        updateQuestionCount()
         updatePracticeUi()
     }
 
@@ -51,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         etOptionC = findViewById(R.id.etOptionC)
         etOptionD = findViewById(R.id.etOptionD)
         etCorrectOption = findViewById(R.id.etCorrectOption)
-        tvStatus = findViewById(R.id.tvStatus)
+        tvCount = findViewById(R.id.tvCount)
         tvPracticeQuestion = findViewById(R.id.tvPracticeQuestion)
         rgPracticeOptions = findViewById(R.id.rgPracticeOptions)
         rbOptionA = findViewById(R.id.rbOptionA)
@@ -59,10 +56,11 @@ class MainActivity : AppCompatActivity() {
         rbOptionC = findViewById(R.id.rbOptionC)
         rbOptionD = findViewById(R.id.rbOptionD)
         btnCheckAnswer = findViewById(R.id.btnCheckAnswer)
+        btnNext = findViewById(R.id.btnNext)
         tvResult = findViewById(R.id.tvResult)
     }
 
-    private fun saveOrReplaceMcq() {
+    private fun addQuestion() {
         val question = etQuestion.text.toString().trim()
         val optionA = etOptionA.text.toString().trim()
         val optionB = etOptionB.text.toString().trim()
@@ -71,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         val correctOption = etCorrectOption.text.toString().trim().uppercase()
 
         if (question.isEmpty() || optionA.isEmpty() || optionB.isEmpty() || optionC.isEmpty() || optionD.isEmpty()) {
-            showToast("Please fill all fields")
+            showToast("Please fill all MCQ fields")
             return
         }
 
@@ -80,10 +78,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val mcq = McqQuestion(question, listOf(optionA, optionB, optionC, optionD), correctOption)
-        storage.save(mcq)
-        savedQuestion = mcq
-        attempted = false
+        questions.add(McqQuestion(question, listOf(optionA, optionB, optionC, optionD), correctOption))
 
         etQuestion.text.clear()
         etOptionA.text.clear()
@@ -92,19 +87,17 @@ class MainActivity : AppCompatActivity() {
         etOptionD.text.clear()
         etCorrectOption.text.clear()
 
-        showToast("MCQ saved. Existing MCQ was replaced.")
-        updateStatus()
-        updatePracticeUi()
+        showToast("MCQ added. Keep pasting from ChatGPT and practice!")
+        updateQuestionCount()
+
+        if (questions.size == 1) {
+            updatePracticeUi()
+        }
     }
 
     private fun checkAnswer() {
-        val current = savedQuestion ?: run {
-            showToast("Save one MCQ first")
-            return
-        }
-
-        if (attempted) {
-            showToast("This MCQ is already checked. Save another or edit and replace.")
+        if (questions.isEmpty()) {
+            showToast("Add at least one MCQ first")
             return
         }
 
@@ -121,29 +114,34 @@ class MainActivity : AppCompatActivity() {
             else -> "D"
         }
 
+        val current = questions[currentQuestionIndex]
         if (selectedOption == current.correctOption) {
             score++
-            tvResult.text = "✅ Correct! Total score: $score"
+            tvResult.text = "Correct! Score: $score/${currentQuestionIndex + 1}"
         } else {
-            tvResult.text = "❌ Wrong. Correct answer: ${current.correctOption}. Total score: $score"
+            tvResult.text = "Wrong. Correct answer: ${current.correctOption}. Score: $score/${currentQuestionIndex + 1}"
         }
 
-        attempted = true
         btnCheckAnswer.isEnabled = false
     }
 
-    private fun updateStatus() {
-        tvStatus.text = if (savedQuestion == null) {
-            "Stored MCQ: none"
-        } else {
-            "Stored MCQ: 1 (saved in local app storage)"
+    private fun nextQuestion() {
+        if (questions.isEmpty()) {
+            showToast("No MCQs to practice yet")
+            return
         }
+
+        currentQuestionIndex = (currentQuestionIndex + 1) % questions.size
+        updatePracticeUi()
+    }
+
+    private fun updateQuestionCount() {
+        tvCount.text = "Saved MCQs: ${questions.size}"
     }
 
     private fun updatePracticeUi() {
-        val current = savedQuestion
-        if (current == null) {
-            tvPracticeQuestion.text = "No MCQ saved yet. Paste from ChatGPT and tap Save MCQ."
+        if (questions.isEmpty()) {
+            tvPracticeQuestion.text = "No MCQ yet. Add your first question from ChatGPT above."
             rbOptionA.text = "Option A"
             rbOptionB.text = "Option B"
             rbOptionC.text = "Option C"
@@ -154,7 +152,8 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        tvPracticeQuestion.text = current.question
+        val current = questions[currentQuestionIndex]
+        tvPracticeQuestion.text = "Q${currentQuestionIndex + 1}: ${current.question}"
         rbOptionA.text = "A. ${current.options[0]}"
         rbOptionB.text = "B. ${current.options[1]}"
         rbOptionC.text = "C. ${current.options[2]}"
